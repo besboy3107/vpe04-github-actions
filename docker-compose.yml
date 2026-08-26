@@ -1,0 +1,24 @@
+name: vpe04-github-actions
+
+services:
+  app:
+    build:
+      context: .
+    image: vpe04-github-actions:${APP_VERSION:-local}
+    container_name: vpe04-flask-app
+    environment:
+      APP_ENV: vps
+      APP_VERSION: ${APP_VERSION:-local}
+    ports:
+      - "127.0.0.1:5056:5000"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=2)
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
